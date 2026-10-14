@@ -1,0 +1,36 @@
+.header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 32px 0;
+
+  img {
+    height: 24px;
+  }
+}
+
+.entry {
+  display: flex;
+
+  .entry--marker {
+    width: 7px;
+    margin-right: 4px;
+  }
+  .entry--image {
+    width: 125px;
+    height: 168px;
+    overflow: hidden;
+    flex-shrink: 0;
+    margin-right: 19px;
+
+    .entry--image--content {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .country {
+    margin-right: 12px;
+  }
+}
