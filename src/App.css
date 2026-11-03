@@ -35,3 +35,10 @@
     margin-right: 12px;
   }
 }
+
+.ingredient-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
