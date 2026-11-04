@@ -2,6 +2,7 @@ import { useState } from "react";
 import starEmpty from '../assets/star-empty.png';
 import starFilled from '../assets/star-filled.png'
 import avatar from '../assets/user.png'
+import Star from "./Star";
 
 export default function ContactCard() {
     const [contact, setContact] = useState({
@@ -27,7 +28,8 @@ export default function ContactCard() {
                     alt="User profile picture"
                 />
                 <div className="info">
-                    <button
+                    <Star filled={contact.isFavorite} onClick={toggleFavorite}/>
+                    {/* <button
                         onClick={toggleFavorite}
                         aria-pressed={contact.isFavorite}
                         className="favorite-button"
@@ -37,7 +39,7 @@ export default function ContactCard() {
                             alt={contact.isFavorite ? "filled star icon" : "empty star icon"}
                             className="favorite"
                         />
-                    </button>
+                    </button> */}
                     <h2 className="name">
                         {firstName} {lastName}
                     </h2>

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import "../App.css";
-import marker from "../assets/marker.png";
+import "../../App.css";
+import marker from "../../assets/marker.png";
 
 interface EntryProps {
   country: string;
@@ -8,6 +8,7 @@ interface EntryProps {
   googleMapsLink: string;
   dates: string;
   text: string;
+  numFavorites?: 0;
   img: {
     src: string;
     alt: string;
