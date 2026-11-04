@@ -3,11 +3,9 @@ import './App.css'
 
 
 export default function Page() {
-  const [ingredients, setIngredients] = useState<string[]>(['flour', 'sugar', 'eggs', 'milk', 'butter']);
+  const [ingredients, setIngredients] = useState<string[]>(['flour', 'sugar']);
 
-  function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+  function addIngredients(formData: FormData) {
     const ingredient = formData.get('ingredient');
     if(ingredient) {
       setIngredients(prev => {
@@ -18,7 +16,7 @@ export default function Page() {
 
   return (
     <main>
-      <form className='ingredient-form' onSubmit={handleSubmit}>
+      <form className='ingredient-form' action={addIngredients}>
         <input name='ingredient' type='text' placeholder='Your ingredient' aria-label='Add ingredient' />
         <button type='submit'>Add Ingredient</button>
       </form>

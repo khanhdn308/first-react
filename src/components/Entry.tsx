@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../App.css";
 import marker from "../assets/marker.png";
 
@@ -16,6 +17,12 @@ interface EntryProps {
 export default function Entry(props: EntryProps) {
   const { country, title, googleMapsLink, dates, text, img } = props;
 
+  const [isShown, setIsShown] = useState(false);
+
+  function toggleShow() {
+    setIsShown(prevShown => !prevShown);
+  }
+
   return (
     <article className="entry">
       <div className="entry--image">
@@ -27,7 +34,8 @@ export default function Entry(props: EntryProps) {
         <a href={googleMapsLink}>View on Google Maps</a>
         <h2 className="entry--title">{title}</h2>
         <p>{dates}</p>
-        <p>{text}</p>
+        {isShown && <p>{text}</p>}
+        <button className="entry--button" onClick={toggleShow}>{isShown ? "Show Less" : "Read More"}</button>
       </div>
     </article>
   );
