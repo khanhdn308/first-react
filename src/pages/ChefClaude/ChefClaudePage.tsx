@@ -1,10 +1,18 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../../App.css";
 import Recipe from "./Recipe";
+import IngredientsList from "./IngredientsList";
 
 export default function ChefClaudePage() {
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [recipeShown, setRecipeShown] = useState<boolean>(false);
+    const recipeSection = useRef<HTMLDivElement | null>(null);
+
+    useEffect(() => {
+      if(recipeSection.current && recipeShown)
+        recipeSection.current.scrollIntoView({behavior: "smooth"});
+    }, [recipeShown]);
+
   
     function addIngredients(formData: FormData) {
       const ingredient = formData.get('ingredient');
@@ -26,21 +34,7 @@ export default function ChefClaudePage() {
           <button type='submit'>Add Ingredient</button>
         </form>
         {ingredients.length > 0 && (
-        <section>
-            <h2>Ingredients</h2>
-            <ul>
-                {ingredients.map((ingredient, index) => <li key={index}>{ingredient}</li>)}
-            </ul>
-            {ingredients.length >= 3 && (
-            <div>
-                <div>
-                    <h3>Ready for recipe</h3>
-                    <p>Click the button below to get a recipe based on your ingredients.</p>
-                </div>
-                <button onClick={toggleRecipeShown}>Get Recipe</button>
-            </div>
-            )}       
-        </section>
+          <IngredientsList ingredients={ingredients} onClick={toggleRecipeShown} ref={recipeSection} />
         )}
         {recipeShown && <Recipe />}
       </main>

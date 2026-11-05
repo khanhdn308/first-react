@@ -1,5 +1,5 @@
 import '../../App.css';
-import locations from '../../../data.ts';
+import locations from '../../consts/locations.ts';
 import Entry from './Entry.tsx';
 
 
