@@ -9,6 +9,7 @@ import CounterPage from "./pages/Counter/CounterPage.tsx";
 import TravelJournalPage from "./pages/TravelJournal/TravelJournalPage.tsx";
 import PadPage from "./pages/Pad/PadPage.tsx";
 import MemeGeneratorPage from "./pages/MemeGenerator/MemeGenerator.tsx";
+import Tenzies from "./pages/Tenzies/Tenzies.tsx";
 
 function App() {
   const [user, setUser] = useState("Khanh");
@@ -16,14 +17,15 @@ function App() {
   return (
     <>
       <Header user={user} />
-      <ContactCard />
-      <ChefClaudePage />
+      {/* <ContactCard /> */}
+      {/* <ChefClaudePage /> */}
       {/* <CounterPage /> */}
       {/* <TravelJournalPage /> */}
       {/* <SignUpForm /> */}
       {/* <PadPage /> */}
       {/* <Toast /> */}
       {/* <MemeGeneratorPage /> */}
+      <Tenzies />
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
