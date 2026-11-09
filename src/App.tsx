@@ -10,6 +10,7 @@ import TravelJournalPage from "./pages/TravelJournal/TravelJournalPage.tsx";
 import PadPage from "./pages/Pad/PadPage.tsx";
 import MemeGeneratorPage from "./pages/MemeGenerator/MemeGenerator.tsx";
 import Tenzies from "./pages/Tenzies/Tenzies.tsx";
+import AssemblyPage from "./pages/Assembly/AssemblyPage.tsx";
 
 function App() {
   const [user, setUser] = useState("Khanh");
@@ -25,7 +26,8 @@ function App() {
       {/* <PadPage /> */}
       {/* <Toast /> */}
       {/* <MemeGeneratorPage /> */}
-      <Tenzies />
+      {/* <Tenzies /> */}
+      <AssemblyPage />
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>

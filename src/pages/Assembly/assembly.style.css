@@ -1,0 +1,48 @@
+.badge {
+  position: relative; /* Locks the overlay inside the boundary of the badge */
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  margin-right: 1px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.badge:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.badge::after {
+  content: "💀";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  
+  background-color: rgba(0, 0, 0, 0.45); 
+  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.badge.eliminated {
+  cursor: not-allowed;
+}
+
+.badge.eliminated::after {
+  opacity: 1; /* Fades in the dark tint and emoji */
+}
