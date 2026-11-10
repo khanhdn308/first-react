@@ -15,12 +15,6 @@
 // 4. Keep trying after 8 => user lost 
 // 5. User won if all characters are revealed
 
-interface CharacterInf {
-    content: string;
-    status: string;
-    key: number; 
-}
-
 const MAX_TRIES = 8;
 const GAME_IN_PROGRESS = 1;
 const GAME_WON = 2;
@@ -101,8 +95,19 @@ function initKeyboard() {
     return keys;
 }
 
+function initChars(answer: string) {
+    const chars= [];
+    for(const ch of answer) {
+        chars.push({
+            content: ch,
+            status: "hidden"
+        });
+    }
+    return chars;
+}
 
-import { useEffect, useRef, useState } from "react"
+
+import { useEffect, useState } from "react"
 import Badge from "./Badge";
 import "./assembly.style.css";
 import CharBox from "./CharBox";
@@ -112,51 +117,72 @@ export default function AssemblyPage() {
     const [totalTries, setTotalTries] = useState(0);
     const [languages, setLanguages] = useState(LANGUAGES);
     const [eliminateIndex, setEliminateIndex] = useState(-1);
-    const [answer, useAnswer] = useState(getRandomElement(WORDS));
-
-    const badgeComponents = languages.map((lang, index) => (
-        <Badge key={index} content={lang.name} background="blue" eliminated={!lang.active}/>
-    ));
-
-    useEffect(() => {
-        console.log(`Current try ${totalTries}`);
-        if(totalTries === MAX_TRIES) {
-            console.log(`You lost`);
-        }
-    }, [totalTries])
-    
-    // Choose the word to guess
-    const chars= [];
-    for(const ch of answer) {
-        chars.push({
-            content: ch,
-            status: "unguessed"
-        });
-    }
+    const [answer, setAnswer] = useState(getRandomElement(WORDS));
+    const [chars, setChars] = useState(initChars(answer));
 
     // Init the keyboard section
     const [keyboard, setKeyboard] = useState(initKeyboard);
 
+    function guessCharacter(index: number, letter: string) {
+        // Only process unguessed letters
+        if(keyboard[index].status !== "unguessed") return;
 
-    function guessCharacter(index: number) {
+        if (gameStatus !== GAME_IN_PROGRESS) {
+            return;
+        }
+        let isCorrect = false;
+        let hasWon = false;
+        // Set the keyboard
         const updatedKeys = keyboard.map((key) => {
             if (key.index == index) {
-                const isCorrect = answer.includes(key.content);
+                isCorrect = answer.includes(key.content);
                 return { ...key, status: isCorrect ? "correct" : "incorrect"};
             }
             return key;
         });
-        setTotalTries(totalTries + 1);
+        let nextTotalTries = totalTries;
+
+        if(isCorrect) { // Guess is correct
+            const newChars = chars.map(c => {
+                if(c.content === letter) {
+                    return {...c, status: "correct"}
+                } else {
+                    return c;
+                }
+            });
+            if(newChars.every(c => c.status === "correct")) {
+                hasWon = true;
+            }
+            setChars(newChars);
+        } else {
+            nextTotalTries++;
+            const nextEliminated = eliminateIndex + 1;
+            setEliminateIndex(nextEliminated);
+            setLanguages(prev => prev.map((item, index) => index === nextEliminated ? {...item, active: false} : item));
+        }
+        const nextStatus = hasWon ? GAME_WON : nextTotalTries >= MAX_TRIES ? GAME_LOST : GAME_IN_PROGRESS;
+        if (nextStatus === GAME_LOST) {
+            const newChars = chars.map(c => {
+                // Mark all hidden as failed
+                if(c.status == "hidden") {
+                    return {...c, status: "incorrect"}
+                } else {
+                    return c;
+                }
+            });
+            setChars(newChars);
+        }
+        setTotalTries(nextTotalTries);
+        setGameStatus(nextStatus);
         setKeyboard(updatedKeys);
     }
 
-
     const charComponents = chars.map((char, index) => (
-        <CharBox key={index} content={char.content} status={char.status} onClick={() => guessCharacter(index)}/>
+        <CharBox key={index} content={char.content} status={char.status} onClick={() => {}}/>
     ));
 
     const keyboardComponents = keyboard.map((c, index) => (
-        <CharBox key={index} content={c.content} status={c.status} onClick={() => guessCharacter(index)}/>
+        <CharBox key={index} content={c.content} status={c.status} disabled={gameStatus !== GAME_IN_PROGRESS} onClick={() => guessCharacter(index, c.content)}/>
     ));
 
     return (
@@ -176,7 +202,14 @@ export default function AssemblyPage() {
             </div>}            
 
             <div>
-                {badgeComponents}
+            {languages.map((lang) => (
+                <Badge 
+                    key={lang.id}
+                    content={lang.name} 
+                    background={lang.background}
+                    eliminated={!lang.active}
+                />
+            ))}
             </div>
 
             <div className="guess-container">

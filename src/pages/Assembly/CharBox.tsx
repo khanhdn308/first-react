@@ -1,5 +1,5 @@
-export default function CharBox(props: {content: string, status: string, onClick: () => void}) {
-    const {status, content, onClick } = props;
+export default function CharBox(props: {content: string, status: string, onClick: () => void, disabled?: boolean}) {
+    const {status, content, onClick, disabled = false } = props;
 
     let background = "#FCBA29";
     switch(status) {
@@ -15,6 +15,6 @@ export default function CharBox(props: {content: string, status: string, onClick
     }
 
     return (
-        <button className="char-box" style={{backgroundColor: background}} onClick={onClick}>{status == "hidden" && content}</button>
+        <button className="char-box" style={{backgroundColor: background}} onClick={onClick} disabled={disabled}>{status !== "hidden" && content}</button>
     )
 }
