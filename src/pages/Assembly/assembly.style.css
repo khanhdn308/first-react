@@ -46,3 +46,26 @@
 .badge.eliminated::after {
   opacity: 1; /* Fades in the dark tint and emoji */
 }
+
+.guess-container {
+  display: flex;
+  margin: 50px;
+  .char-box {
+    margin-right: 6px;
+  }
+}
+
+.char-container {
+  display: grid;
+  grid-template-columns: repeat(10, 100px);
+  grid-template-rows: repeat(3, 100px);
+  gap: 6px;
+}
+
+.char-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}

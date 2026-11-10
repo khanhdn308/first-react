@@ -14,6 +14,14 @@
 //     3.2 If correct => green otherwise red 
 // 4. Keep trying after 8 => user lost 
 // 5. User won if all characters are revealed
+
+interface CharacterInf {
+    content: string;
+    status: string;
+    key: number; 
+}
+
+const MAX_TRIES = 8;
 const GAME_IN_PROGRESS = 1;
 const GAME_WON = 2;
 const GAME_LOST = 3;
@@ -63,7 +71,7 @@ const LANGUAGES = [
     {
         id: 8,
         name: "Rust",
-        active: false,
+        active: true,
         background: "blue"
     },
     {
@@ -73,20 +81,83 @@ const LANGUAGES = [
         background: "blue"
     }
 ]
-const WORDS = ["HORSE", "MACHINE", "BOOK", "INJECTION", "ELEPHANT", "REFACTOR"]
+const WORDS = ["HORSE", "MACHINE", "BOOK", "INJECTION", "ELEPHANT", "REFACTOR"];
 
-import { useState } from "react"
+function getRandomElement(list: string[]) {
+    const index = Math.floor(Math.random() * list.length);
+    return list[index];
+}
+
+function initKeyboard() {
+    const keys = [];
+    let index = 0;
+    for(let i = "A".charCodeAt(0); i <= "Z".charCodeAt(0); i++) {
+        keys.push({
+            index: index++,
+            content: String.fromCharCode(i),
+            status: "unguessed"
+        });
+    }
+    return keys;
+}
+
+
+import { useEffect, useRef, useState } from "react"
 import Badge from "./Badge";
 import "./assembly.style.css";
+import CharBox from "./CharBox";
 
 export default function AssemblyPage() {
     const [gameStatus, setGameStatus] = useState(GAME_IN_PROGRESS);
+    const [totalTries, setTotalTries] = useState(0);
     const [languages, setLanguages] = useState(LANGUAGES);
     const [eliminateIndex, setEliminateIndex] = useState(-1);
+    const [answer, useAnswer] = useState(getRandomElement(WORDS));
 
-    const badgeComponents = languages.map((lang) => (
-        <Badge content={lang.name} background="blue" eliminated={!lang.active}/>
-    ))
+    const badgeComponents = languages.map((lang, index) => (
+        <Badge key={index} content={lang.name} background="blue" eliminated={!lang.active}/>
+    ));
+
+    useEffect(() => {
+        console.log(`Current try ${totalTries}`);
+        if(totalTries === MAX_TRIES) {
+            console.log(`You lost`);
+        }
+    }, [totalTries])
+    
+    // Choose the word to guess
+    const chars= [];
+    for(const ch of answer) {
+        chars.push({
+            content: ch,
+            status: "unguessed"
+        });
+    }
+
+    // Init the keyboard section
+    const [keyboard, setKeyboard] = useState(initKeyboard);
+
+
+    function guessCharacter(index: number) {
+        const updatedKeys = keyboard.map((key) => {
+            if (key.index == index) {
+                const isCorrect = answer.includes(key.content);
+                return { ...key, status: isCorrect ? "correct" : "incorrect"};
+            }
+            return key;
+        });
+        setTotalTries(totalTries + 1);
+        setKeyboard(updatedKeys);
+    }
+
+
+    const charComponents = chars.map((char, index) => (
+        <CharBox key={index} content={char.content} status={char.status} onClick={() => guessCharacter(index)}/>
+    ));
+
+    const keyboardComponents = keyboard.map((c, index) => (
+        <CharBox key={index} content={c.content} status={c.status} onClick={() => guessCharacter(index)}/>
+    ));
 
     return (
         <main>
@@ -107,26 +178,15 @@ export default function AssemblyPage() {
             <div>
                 {badgeComponents}
             </div>
-            <div>
-                <div>A</div>
-                <div>A</div>
-                <div>A</div>
-                <div>A</div>
-                <div>A</div>
-                <div>A</div>
-                <div>A</div>
+
+            <div className="guess-container">
+                {charComponents}
             </div>
-            {/* Keyboard section */}
-            <div>A</div>
-            <div>B</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
-            <div>A</div>
+
+            <div className="char-container">
+                {keyboardComponents}
+            </div>
+            
         </main>
     )
 }
